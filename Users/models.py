@@ -4,8 +4,22 @@ from django.db import models
 
 
 class CustomUserManager(BaseUserManager):
+    """
+    Custom user manager for creating and managing users.
+    """
     def create_user(self, username, email, password, **extra_fields):
-        # Create and save a new user with the given email and password
+        """
+        Method to create a new user instance with the provided email and password.
+
+        Args:
+            username (str): The username of the user.
+            email (str): The email of the user.
+            password (str): The password of the user.
+            **extra_fields: Additional fields to include in the user creation.
+
+        Returns:
+            User: The newly created user instance.
+        """
         email = self.normalize_email(email)
         user = self.model(username=username, email=email, **extra_fields)
         user.set_password(password)
@@ -13,7 +27,18 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password, **extra_fields):
-        # Create and save a new superuser with the given email and password
+        """
+        Method to create a new superuser instance with the provided email and password.
+
+        Args:
+            username (str): The username of the superuser.
+            email (str): The email of the superuser.
+            password (str): The password of the superuser.
+            **extra_fields: Additional fields to include in the superuser creation.
+
+        Returns:
+            User: The newly created superuser instance.
+        """
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
@@ -21,6 +46,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class User(AbstractUser, PermissionsMixin):
+    """
+    Custom user model extending AbstractUser and PermissionsMixin.
+    """
     ROL_TYPE = (
         ('Estudiante', 'Estudiante'),
         ('Profesor', 'Profesor')
@@ -41,4 +69,10 @@ class User(AbstractUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
+        """
+        Method to return a string representation of the user.
+
+        Returns:
+            str: The email of the user.
+        """
         return f'user email: {self.email}'

@@ -14,22 +14,34 @@ from .serializers import (
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
+    """
+    View for obtaining JWT token pair (access token and refresh token) by providing user credentials.
+    """
     serializer_class = MyTokenObtainPairSerializer
 
 
-class CreateUserView(generics.CreateAPIView):
+class Create(generics.CreateAPIView):
+    """
+    View for creating a new user.
+    """
     serializer_class = CreateUserSerializer
     permission_classes = [permissions.AllowAny]
 
 
-class UpdateUserView(generics.UpdateAPIView):
+class Update(generics.UpdateAPIView):
+    """
+    View for updating user details.
+    """
     queryset = User.objects.all()
     lookup_field = 'pk'
     serializer_class = UpdateUserSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwnerPermission]
 
 
-class UpdateUserPasswordView(generics.UpdateAPIView):
+class UpdatePassword(generics.UpdateAPIView):
+    """
+    View for updating user password.
+    """
     queryset = User.objects.all()
     lookup_field = 'pk'
     serializer_class = PasswordUpdateSerializer
@@ -37,6 +49,17 @@ class UpdateUserPasswordView(generics.UpdateAPIView):
     http_method_names = ['put']
 
     def put(self, request, *args, **kwargs):
+        """
+        Handle PUT request for updating user password.
+
+        Args:
+            request (HttpRequest): The request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            Response: Response indicating the status of the password update operation.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         new_password = serializer.validated_data['new_password']
