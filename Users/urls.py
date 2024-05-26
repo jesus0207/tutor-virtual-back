@@ -13,4 +13,5 @@ urlpatterns = [
     path('create', Create.as_view(), name='create'),
     path('update/<int:pk>', Update.as_view(), name='update'),
     path('update-password/<int:pk>', UpdatePassword.as_view(), name='update_password'),
+    path('retrieve/<int:pk>', RetrieveUserInfo.as_view(), name='retrieve_user_info'),
 ]

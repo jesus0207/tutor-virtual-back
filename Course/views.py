@@ -37,7 +37,7 @@ def get_secret_key():
     return secrets.get('OPENAI_KEY')
 
 
-api_key = get_secret_key()
+api_key = 'get_secret_key()'
 if api_key:
     openai.api_key = api_key
 
