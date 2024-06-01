@@ -21,7 +21,7 @@ class Course(models.Model):
     Model representing a course.
     """
     name = models.CharField(max_length=100, verbose_name="Title for your course")
-    instructor = models.ForeignKey(User, on_delete=models.PROTECT, related_name="courses", blank=False)
+    instructor = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, null= False)
     description = models.CharField(max_length=200, verbose_name="Write a quick description of your course")
     context = models.TextField(
         verbose_name="Write the topics, context, and a large description for your course",
