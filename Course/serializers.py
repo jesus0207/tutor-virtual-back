@@ -3,7 +3,34 @@ from Users.models import User
 from .models import Course
 
 
-class CourseCreateSerializer(serializers.ModelSerializer):
+class BaseCourseSerializer(serializers.ModelSerializer):
+    """
+    Base serializer for course with common validation.
+    """
+
+    def validate_instructor(self, value):
+        """
+        Validate that the instructor is a professor.
+
+        Args:
+            value (int): The ID of the instructor.
+
+        Returns:
+            User: The validated instructor.
+
+        Raises:
+            serializers.ValidationError: If the instructor does not exist or is not a professor.
+        """
+        try:
+            user = User.objects.get(pk=value)
+            if user.rol != "Profesor":
+                raise serializers.ValidationError('Only professors can create courses.')
+        except User.DoesNotExist:
+            raise serializers.ValidationError('User does not exist.')
+        return value
+
+
+class CourseCreateSerializer(BaseCourseSerializer):
     """
     Serializer for creating a new course.
     """
@@ -28,33 +55,16 @@ class CourseCreateSerializer(serializers.ModelSerializer):
         Returns:
             Course: The created course instance.
         """
-        course = Course.objects.create(**validated_data)
-        return course
+        return Course.objects.create(**validated_data)
 
-    def is_valid(self, raise_exception=False):
-        """
-        Validate the serializer.
 
-        Args:
-            raise_exception (bool): Whether to raise a validation error if validation fails.
-
-        Returns:
-            bool: True if the serializer is valid, False otherwise.
-        """
-        if 'instructor' in self.initial_data:
-            try:
-                user = User.objects.get(pk=self.initial_data['instructor'])
-                if user.rol != "Profesor":
-                    self._errors = {'instructor': 'Only professors can create courses.'}
-                    if raise_exception:
-                        raise serializers.ValidationError(self.errors)
-                    return False
-            except User.DoesNotExist:
-                self._errors = {'instructor': 'User does not exist.'}
-                if raise_exception:
-                    raise serializers.ValidationError(self.errors)
-                return False
-        return super().is_valid(raise_exception=raise_exception)
+class CourseUpdateSerializer(BaseCourseSerializer):
+    """
+    Serializer for updating a course.
+    """
+    class Meta:
+        model = Course
+        fields = ["name", "description", "context", "active"]
 
 
 class QuestionSerializer(serializers.Serializer):

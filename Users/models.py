@@ -7,7 +7,7 @@ class CustomUserManager(BaseUserManager):
     """
     Custom user manager for creating and managing users.
     """
-    def create_user(self, username, email, password, **extra_fields):
+    def create_user(self, email, password, **extra_fields):
         """
         Method to create a new user instance with the provided email and password.
 
@@ -21,12 +21,12 @@ class CustomUserManager(BaseUserManager):
             User: The newly created user instance.
         """
         email = self.normalize_email(email)
-        user = self.model(username=username, email=email, **extra_fields)
+        user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()
         return user
 
-    def create_superuser(self, username, email, password, **extra_fields):
+    def create_superuser(self, email, password, **extra_fields):
         """
         Method to create a new superuser instance with the provided email and password.
 
@@ -42,7 +42,7 @@ class CustomUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        return self.create_user(username=username, email=email, password=password, **extra_fields)
+        return self.create_user(email=email, password=password, **extra_fields)
 
 
 class User(AbstractUser, PermissionsMixin):

@@ -27,6 +27,7 @@ class Course(models.Model):
         verbose_name="Write the topics, context, and a large description for your course",
     )
     creation_date = models.DateTimeField(auto_now_add=True, verbose_name="Creation date")
+    active = models.BooleanField(null=False, default=True)
 
     class Meta:
         ordering = ['name']
