@@ -12,7 +12,7 @@ class List(generics.ListAPIView):
     """
     List all courses. (for students)
     """
-    queryset = Course.objects.filter(active= True)
+    queryset = Course.objects.filter(active=True)
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CourseListSerializer
 
@@ -26,7 +26,7 @@ class ListOwnCourse(generics.ListAPIView):
 
     def get_queryset(self):
         instructor_pk = self.request.user.id
-        return Course.objects.filter(instructor__id=instructor_pk)
+        return Course.objects.filter(instructor__id=instructor_pk, active=True)
 
 
 class Create(generics.CreateAPIView):
