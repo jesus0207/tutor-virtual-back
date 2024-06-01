@@ -22,7 +22,7 @@ class BaseCourseSerializer(serializers.ModelSerializer):
             serializers.ValidationError: If the instructor does not exist or is not a professor.
         """
         try:
-            user = User.objects.get(pk=value)
+            user = User.objects.get(pk=value.id)
             if user.rol != "Profesor":
                 raise serializers.ValidationError('Only professors can create courses.')
         except User.DoesNotExist:
@@ -55,7 +55,9 @@ class CourseCreateSerializer(BaseCourseSerializer):
         Returns:
             Course: The created course instance.
         """
-        return Course.objects.create(**validated_data)
+        course = Course(**validated_data)
+        course.save()
+        return course
 
 
 class CourseUpdateSerializer(BaseCourseSerializer):

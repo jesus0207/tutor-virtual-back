@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Course
-from .permissions import IsCoursePermission
+from .permissions import IsCoursePermission, IsYourOwnId
 from .serializers import CourseCreateSerializer, CourseListSerializer, CourseUpdateSerializer, QuestionSerializer
 
 
@@ -33,7 +33,7 @@ class Create(generics.CreateAPIView):
     """
     Create a new course. (for instructors)
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsYourOwnId]
     serializer_class = CourseCreateSerializer
 
 
@@ -45,6 +45,24 @@ class Modify(generics.UpdateAPIView):
     lookup_field = 'pk'
     permission_classes = [permissions.IsAuthenticated, IsCoursePermission]
     serializer_class = CourseUpdateSerializer
+
+
+class DeleteCourseView(generics.GenericAPIView):
+    queryset = Course.objects.filter(active= True)
+    permission_classes = [permissions.IsAuthenticated, IsCoursePermission]
+    lookup_field = 'pk'
+    serializer_class = CourseCreateSerializer
+
+    def post(self, request, *args, **kwargs):
+        """
+        Change the activation status of a Course object and return the serialized response.
+        """
+        instance = self.get_object()
+        new_value = instance.active
+        instance.active = not new_value
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class Chat(APIView):
