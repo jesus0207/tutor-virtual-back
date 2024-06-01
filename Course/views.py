@@ -12,7 +12,7 @@ class List(generics.ListAPIView):
     """
     List all courses. (for students)
     """
-    queryset = Course.objects.all()
+    queryset = Course.objects.filter(active= True)
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = CourseListSerializer
 
@@ -41,7 +41,7 @@ class Modify(generics.UpdateAPIView):
     """
     Update a course. (for instructors)
     """
-    queryset = Course.objects.all()
+    queryset = Course.objects.filter(active= True)
     lookup_field = 'pk'
     permission_classes = [permissions.IsAuthenticated, IsCoursePermission]
     serializer_class = CourseUpdateSerializer
