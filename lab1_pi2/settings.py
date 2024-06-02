@@ -32,7 +32,7 @@ SECRET_KEY = 'django-insecure-wrrt&&%8t0#x(ttgmfqk72e@o3(&&zzy_gdf)0gml3fn%%oitv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'laboratorio1-pi2.onrender.com', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'tutor-virtual-back.onrender.com', 'localhost']
 
 
 
