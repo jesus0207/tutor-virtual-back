@@ -1,7 +1,6 @@
-from Course.utils import ask_open_ai, validate_context
+from Course.utils import ask_google_ai, validate_context
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .models import Course, FavoriteCourse
 from .permissions import IsCoursePermission, IsYourOwnIdInstructor, IsYourOwnIdStudent
@@ -56,6 +55,7 @@ class DeleteCourseView(generics.GenericAPIView):
     def post(self, request, *args, **kwargs):
         """
         Change the activation status of a Course object and return the serialized response.
+        If the course is deactivated, also disappears from favorite courses
         """
         instance = self.get_object()
         new_value = instance.active
@@ -91,14 +91,21 @@ class DeleteFavoriteCourseView(generics.GenericAPIView):
 
 
 class ListFavoriteCourseView(generics.ListAPIView):
+    """
+    List favorite courses of student
+    """
     def get_queryset(self):
+        """
+        Customize queryset for retrieve only active and favorite courses of the authenticated user
+        """
         user = self.request.user
-        return FavoriteCourse.objects.filter(student=user, active=True)
+        return FavoriteCourse.objects.filter(student=user,course__active=True,active=True)
     
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = ListFavoriteCourseSerializer
 
-class Chat(APIView):
+
+class Chat(generics.GenericAPIView):
     """
     Chat with the OpenAI model. (for students)
     """
@@ -121,7 +128,7 @@ class Chat(APIView):
             question = serializer.validated_data.get('content')
             if validate_context(question):
                 context = Course.get_context(pk)
-                answer = ask_open_ai(context, question)
+                answer = ask_google_ai(context, question)
                 return Response({'answer': answer})
             else:
                 return Response({'error': 'Invalid question'}, status=status.HTTP_400_BAD_REQUEST)
