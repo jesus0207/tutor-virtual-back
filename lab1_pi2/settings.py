@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wrrt&&%8t0#x(ttgmfqk72e@o3(&&zzy_gdf)0gml3fn%%oitv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG_MODE")
 
 ALLOWED_HOSTS = ['127.0.0.1', 'tutor-virtual-back.onrender.com', 'localhost']
 
